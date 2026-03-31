@@ -9,8 +9,8 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-cur.execute("""         
-CREATE TABLE customers (
+cur.execute("""
+CREATE TABLE IF NOT EXISTS customers (
     customer_id SERIAL PRIMARY KEY,
     full_name VARCHAR(100),
     email VARCHAR(100),
@@ -18,8 +18,8 @@ CREATE TABLE customers (
 );
 """)
 
-cur.execute("""            
-CREATE TABLE products (
+cur.execute("""
+CREATE TABLE IF NOT EXISTS products (
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(100),
     price NUMERIC(10,2),
@@ -27,14 +27,14 @@ CREATE TABLE products (
 );
 """)
 
-cur.execute("""           
-CREATE TABLE orders (
+cur.execute("""
+CREATE TABLE IF NOT EXISTS orders (
     order_id SERIAL PRIMARY KEY,
     customer_id INT REFERENCES customers(customer_id),
     product_id INT REFERENCES products(product_id),
     order_date DATE,
     quantity INT,
-    status VARCHAR(20) -- örneğin: completed, cancelled
+    status VARCHAR(20)
 );
 """)
 
@@ -61,7 +61,6 @@ INSERT INTO orders (customer_id, product_id, order_date, quantity, status) VALUE
 (3, 4, '2023-04-05', 1, 'cancelled'),
 (4, 3, '2023-05-20', 1, 'completed');
 """)
-
 
 conn.commit()
 cur.close()
